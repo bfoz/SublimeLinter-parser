@@ -1,0 +1,6 @@
+SublimeLinter-parser
+-------------------------------
+This linter plugin for [SublimeLinter](https://github.com/SublimeLinter/SublimeLinter) is a pure python linter that uses an internal parser instead of using external tools.
+
+For more information, please see:
+https://github.com/bfoz/SublimeLinter-parser
