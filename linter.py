@@ -1,10 +1,17 @@
-from SublimeLinter.lint import Linter  # or NodeLinter, PythonLinter, ComposerLinter, RubyLinter
+from SublimeLinter.lint import Linter
 
+class SublimeLinterParser(Linter):
+    cmd = None 		# Tell SublimeLinter to call the run() method instead of running an external tool
 
-class Parser(Linter):
-    cmd = '__cmd__'
-    regex = r''
-    multiline = False
+    # Match all views
     defaults = {
         'selector': 'source.python'
     }
+
+    def run(self, cmd, code):
+    	print("---- RUN ---- ")
+    	# print(code)
+    	print("---- END RUN ----")
+
+def plugin_loaded():
+    print("Loaded!")
