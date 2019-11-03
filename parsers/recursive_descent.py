@@ -6,6 +6,7 @@ from ..grammar import Alternation, Concatenation, Repetition
 
 class Node:
     def __init__(self, rule, items):
+        self.getters = {}
         self.items = items
         self.rule = rule
 
@@ -19,6 +20,14 @@ class Node:
         if not isinstance(other, Node):
             return NotImplemented
         return (self.rule == other.rule) and (self.items == other.items)
+
+    def __getattr__(self, name):
+        try:
+            _value = self.rule.getters[name](self)
+            setattr(self, name, _value)     # Cache the value to avoid calling the getter again
+            return _value
+        except KeyError:
+            raise AttributeError(f"Rule has no attribute named {name}")
 
 class RecursiveDescent:
     """ A Recursive Descent parser that uses a set of named-rules as its grammar """
