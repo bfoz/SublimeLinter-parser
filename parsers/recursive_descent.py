@@ -4,7 +4,21 @@ from collections import namedtuple
 
 from ..grammar import Alternation, Concatenation, Repetition
 
-Node = namedtuple('Node', ('rule', 'items'))
+class Node:
+    def __init__(self, rule, items):
+        self.items = items
+        self.rule = rule
+
+        try:
+            for action in rule.actions:
+                action(self)
+        except AttributeError:
+            pass
+
+    def __eq__(self, other):
+        if not isinstance(other, Node):
+            return NotImplemented
+        return (self.rule == other.rule) and (self.items == other.items)
 
 class RecursiveDescent:
     """ A Recursive Descent parser that uses a set of named-rules as its grammar """

@@ -1,5 +1,13 @@
 _implicit_separator = None
 
+class Base:
+    def __init__(self):
+        self.actions = []
+
+    def add_action(self, callable):
+        self.actions.append(callable)
+        return self
+
 class Repeatable:
     @property
     def any(self):
@@ -17,8 +25,9 @@ class Repeatable:
     def optional(self):
         return Repetition.optional(self)
 
-class Alternation(Repeatable):
+class Alternation(Base, Repeatable):
     def __init__(self, *elements, ordered=False):
+        super().__init__()
         self.elements = list(elements)
         self.ordered = ordered
 
@@ -33,8 +42,9 @@ class Alternation(Repeatable):
     def append(self, item):
         return self.elements.append(item)
 
-class Concatenation(Repeatable):
+class Concatenation(Base, Repeatable):
     def __init__(self, *elements):
+        super().__init__()
         self.elements = list(elements)
 
         # Capture the separator that was in effect at the time of construction
@@ -58,7 +68,9 @@ class Concatenation(Repeatable):
         return self.elements.append(item)
 
 class Repetition:
+class Repetition(Base):
     def __init__(self, element, maximum, minimum):
+        super().__init__()
         self.element = element
         self.maximum = maximum
         self.minimum = minimum
@@ -99,6 +111,16 @@ def concatenation(*args):
 
 def any(element):
     return Repetition.any(element)
+
+# ---
+
+def add_action(pattern):
+    """ A decorator for adding an action to a grammar-element """
+    def decorator(func):
+        def wrapper():
+            pattern.add_action(func)
+        return wrapper
+    return decorator
 
 def implicit_separator(separator):
     """ Set the implicit separator that's assumed to be between every element of a Concatenation """
